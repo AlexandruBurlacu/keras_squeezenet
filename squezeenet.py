@@ -1,6 +1,6 @@
 from keras.models import Model
 from keras.layers import (Input, Dense, Convolution2D, MaxPooling2D, 
-                          Dropout, BatchNormalization, Flatten, Merge)
+                          Dropout, BatchNormalization, Flatten, merge)
 from keras.optimizers import RMSProp
 from keras.utils import np_utils
 
@@ -12,15 +12,17 @@ tn.config.openmp = True
 OMP_NUM_THREADS = mp.cpu_count()
 
 class FireModule:
-  def __init__(self):
-    pass
+  def __init__(self, squeeze_size, expand_size):
+    self.sqz_size = squeeze_size
+    self.expn_size = expand_size
 
   def __call__(self, data):
-    # data = ...(data)
-    # data = ...(data)
-    # data = ...(data)
-    # data = ...(data)
-    pass
+    # squeeze layer
+    sqz_layer = Convolution2D(self.sqz_size, 1, 1, activation = "relu")(data)
+    
+    # expand layer
+    conv_1x1 = Convolution2D(self.expn_size, 1, 1, activation = "relu")(sqz_layer)
+    conv_3x3 = Convolution2D(self.expn_size, 3, 3, activation = "relu")(sqz_layer)
 
-    return data
+    return megre([conv_1x1, conv_3x3], mode = "concat", concat_axis = 1)
 
