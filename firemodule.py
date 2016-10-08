@@ -1,15 +1,11 @@
-from keras.models import Model
-from keras.layers import (Input, Dense, Convolution2D,
-                          MaxPooling2D, Dropout, BatchNormalization,
-                          Flatten, merge, Activation)
-from keras.utils import np_utils
+from keras.layers import Convolution2D, merge
 
-import numpy as np
 import theano as tn
 import multiprocessing as mp
 
 tn.config.openmp = True
 OMP_NUM_THREADS = mp.cpu_count()
+
 
 class FireModule:
   def __init__(self, squeeze_size, expand_size, stride = 1):

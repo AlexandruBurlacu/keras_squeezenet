@@ -1,3 +1,4 @@
+pip install virtualenv
 virtualenv squeeze
-source squezee/bin/activate
+source squeeze/bin/activate
 pip install -r requirements.txt
