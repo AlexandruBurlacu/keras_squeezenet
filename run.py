@@ -1,10 +1,8 @@
-from keras.models import Model, Sequential
-from keras.layers import (Activation, Dropout, AveragePooling2D, Input,
-                         Flatten, MaxPooling2D, Convolution2D)
-from firemodule import FireModule
 from keras.datasets import cifar10, mnist
 from keras.optimizers import SGD
 from keras.utils import np_utils
+
+from model import SqueezeNetBuilder
 
 import numpy as np
 
@@ -23,32 +21,34 @@ y_train = np_utils.to_categorical(y_train)
 y_test = np_utils.to_categorical(y_test)
 
 
-inputs = Input(x_train.shape[1:])
+#inputs = Input(x_train.shape[1:])
 
-layer = Convolution2D(96, 7, 7)(inputs)
-layer = MaxPooling2D(pool_size=(3, 3), strides=(2, 2))(layer)
+#layer = Convolution2D(96, 7, 7)(inputs)
+#layer = MaxPooling2D(pool_size=(3, 3), strides=(2, 2))(layer)
 
-layer = FireModule(16, 64)(layer)
-layer = FireModule(16, 64)(layer)
+#layer = FireModule(16, 64)(layer)
+#layer = FireModule(16, 64)(layer)
 
-layer = FireModule(32, 128)(layer)
-layer = MaxPooling2D(pool_size=(3, 3), strides=(2, 2))(layer)
-layer = FireModule(32, 128)(layer)
+#layer = FireModule(32, 128)(layer)
+#layer = MaxPooling2D(pool_size=(3, 3), strides=(2, 2))(layer)
+#layer = FireModule(32, 128)(layer)
 
-layer = FireModule(48, 192)(layer)
-layer = FireModule(48, 192)(layer)
+#layer = FireModule(48, 192)(layer)
+#layer = FireModule(48, 192)(layer)
 
-layer = FireModule(64, 256)(layer)
-layer = MaxPooling2D(pool_size=(3, 3), strides=(2, 2))(layer)
-layer = FireModule(64, 256)(layer)
+#layer = FireModule(64, 256)(layer)
+#layer = MaxPooling2D(pool_size=(3, 3), strides=(2, 2))(layer)
+#layer = FireModule(64, 256)(layer)
 
-layer = Dropout(0.5)(layer)
-layer = Convolution2D(10, 1, 1)(layer)
-layer = AveragePooling2D((2, 2))(layer)
+#layer = Dropout(0.5)(layer)
+#layer = Convolution2D(10, 1, 1)(layer)
+#layer = AveragePooling2D((2, 2))(layer)
 
-layer = Flatten()(layer)
-layer = Activation("softmax")(layer)
-model = Model(input = inputs, output = layer)
+#layer = Flatten()(layer)
+#layer = Activation("softmax")(layer)
+#model = Model(input = inputs, output = layer)
+
+model = SqueezeNetBuilder()(x_train, 10)
 
 model.compile(loss = "categorical_crossentropy",
               optimizer = "rmsprop", metrics = ["accuracy"])
