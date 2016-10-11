@@ -4,4 +4,6 @@ Keras implementation of Squeeze Net architecture described in arXiv : 1602.07360
 ## TODOs:
 * add data augmentation
 * add bypasses
-* experiment with gaussian noise
+* experiment with Gaussian Noise
+* experiment with Batch Normalization
+* try more levels of Dense layers
