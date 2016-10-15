@@ -69,8 +69,8 @@ class SqueezeNetBuilder:
                                      # A good example is the FireModule class
 
 
-  def __call__(self, input_data, num_of_cls):
-    inputs = Input(input_data.shape[1:])
+  def __call__(self, input_data_shape, num_of_cls):
+    inputs = Input(input_data_shape)
 
     conv_1  = Convolution2D(96, self.fst_conv_size, self.fst_conv_size)(inputs)
     mpool_1 = MaxPooling2D(pool_size=(3, 3), strides=(2, 2))(conv_1)
@@ -91,6 +91,7 @@ class SqueezeNetBuilder:
 
     dropout = Dropout(0.5)(fire_8)
     conv_2  = Convolution2D(num_of_cls, 1, 1)(dropout)
+    # The size should match the output of conv10
     apool   = AveragePooling2D(self.avg_pool_size)(conv_2)
 
     flatten = Flatten()(apool)
