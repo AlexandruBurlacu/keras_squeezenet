@@ -1,11 +1,14 @@
 from keras.layers import Convolution2D, merge
 
+#--------------------------------------------
 import theano as tn
 import multiprocessing as mp
 
+tn.config.floatX = "float32"
 tn.config.openmp = True
+tn.config.openmp_elemwise_minsize = 20000
 OMP_NUM_THREADS = mp.cpu_count()
-
+#--------------------------------------------
 
 class FireModule:
   def __init__(self, squeeze_size, expand_size, stride = 1):
