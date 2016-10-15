@@ -2,9 +2,9 @@ from keras.datasets import cifar10, mnist
 from keras.optimizers import SGD
 from keras.utils import np_utils
 
-from model import SqueezeNetBuilder
+from models import SqueezeNetBuilder
 
-import numpy as np
+# import numpy as np
 
 
 datasets = {
@@ -23,7 +23,7 @@ y_test = np_utils.to_categorical(y_test)
 model = SqueezeNetBuilder()(x_train, 10)
 
 model.compile(loss = "categorical_crossentropy",
-              optimizer = "rmsprop", metrics = ["accuracy"])
+              optimizer = "adam", metrics = ["accuracy"])
 model.fit(x_train, y_train)
 model.predict(x_test, y_test)
 model.save("squeezenet.dump")
