@@ -54,7 +54,7 @@ class SqueezeNetBuilder:
             for imagenet, (13, 13).
       NOTE: it is always good to check the model.summary()
             for more detailed information.
-            Prevent filters of type (None, `n`, 0, 0). Zeros are forbiden,
+            Prevent filters of type (None, `n`, 0, 0). Zeros are forbidden,
             they will cause errors and the model won't compile.
             To prevent it, tune the avg_pool_size.
     """
