@@ -29,7 +29,7 @@ augumented.fit(x_train)
 y_train = np_utils.to_categorical(y_train)
 y_test  = np_utils.to_categorical(y_test)
 
-model = SqueezeNetBuilder()(x_train.shape[1:], 10)
+model = SqueezeNetBuilder(use_batch_norm = True)(x_train.shape[1:], 10)
 
 model.compile(loss = "categorical_crossentropy",
               optimizer = "adam", metrics = ["accuracy"])
