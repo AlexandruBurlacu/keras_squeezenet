@@ -49,9 +49,9 @@ class Placeholder:
     pass
 
 class SqueezeNetBuilder:
-  def __init__(self, fst_conv_size = 7, avg_pool_size = (2, 2),
-  	                 use_bypasses = False, use_noise = False,
-                         use_batch_norm = True, DenseSubnet = Placeholder):
+  def __init__(self, fst_conv_size, use_bypasses = False,
+                     use_noise = False, use_batch_norm = True,
+                     DenseSubnet = Placeholder):
     """
       NOTE: for cifar dataset use avg_pool_size = (2, 2),
             for imagenet, (13, 13).
@@ -62,7 +62,6 @@ class SqueezeNetBuilder:
             To prevent it, tune the avg_pool_size.
     """
     self.fst_conv_size  = fst_conv_size
-    self.avg_pool_size  = avg_pool_size
     self.use_bypasses   = use_bypasses
     self.use_noise      = use_noise
     self.use_batch_norm = use_batch_norm
@@ -98,7 +97,9 @@ class SqueezeNetBuilder:
     dropout = Dropout(0.5)(fire_8)
     conv_2  = Convolution2D(num_of_cls, 1, 1)(dropout)
     # The size should match the output of conv10
-    apool   = AveragePooling2D(self.avg_pool_size)(conv_2)
+    avg_pool_size = conv_2._keras_shape[2:]
+    #------------------------------------------#
+    apool   = AveragePooling2D(avg_pool_size)(conv_2)
 
     flatten = Flatten()(apool)
     outputs = Activation("softmax")(
