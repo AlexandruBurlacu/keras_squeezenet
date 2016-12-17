@@ -96,6 +96,7 @@ class SqueezeNetBuilder:
 
     dropout = Dropout(0.5)(fire_8)
     conv_2  = Convolution2D(num_of_cls, 1, 1)(dropout)
+    #------------------------------------------#
     # The size should match the output of conv10
     avg_pool_size = conv_2._keras_shape[2:]
     #------------------------------------------#
