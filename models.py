@@ -12,6 +12,9 @@ tn.config.openmp_elemwise_minsize = 200000
 OMP_NUM_THREADS = 4
 #--------------------------------------------
 
+def bypass(layer1, layer2):
+  return merge([layer1, layer2], mode = "concat", concat_axis = 1)
+
 class FireModule:
   """
     The FireModule class mimics the building block of the
@@ -83,18 +86,18 @@ class SqueezeNetBuilder:
     fire_1 = FireModule(16, 64, self.use_batch_norm)(mpool_1)
     fire_2 = FireModule(16, 64, self.use_batch_norm)(fire_1)
 
-    fire_3   = FireModule(32, 128, self.use_batch_norm)(fire_2)
+    fire_3   = FireModule(32, 128, self.use_batch_norm)(fire_2 if not self.use_bypasses else bypass(fire_1, fire_2))
     mpool_2  = MaxPooling2D(pool_size=(3, 3), strides=(2, 2))(fire_3)
     fire_4   = FireModule(32, 128, self.use_batch_norm)(mpool_2)
 
-    fire_5   = FireModule(48, 192, self.use_batch_norm)(fire_4)
+    fire_5   = FireModule(48, 192, self.use_batch_norm)(fire_4 if not self.use_bypasses else bypass(mpool_2, fire_4))
     fire_6   = FireModule(48, 192, self.use_batch_norm)(fire_5)
 
-    fire_7   = FireModule(64, 256, self.use_batch_norm)(fire_6)
+    fire_7   = FireModule(64, 256, self.use_batch_norm)(fire_6 if not self.use_bypasses else bypass(fire_5, fire_6))
     mpool_3  = MaxPooling2D(pool_size=(3, 3), strides=(2, 2))(fire_7)
     fire_8   = FireModule(64, 256, self.use_batch_norm)(mpool_3)
 
-    dropout = Dropout(0.5)(fire_8)
+    dropout = Dropout(0.5)(fire_8 if not self.use_bypasses else bypass(mpool_3, fire_8))
     conv_2  = Convolution2D(num_of_cls, 1, 1)(dropout)
     #------------------------------------------#
     # The size should match the output of conv10

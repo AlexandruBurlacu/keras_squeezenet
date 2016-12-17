@@ -28,7 +28,7 @@ augumented.fit(x_train)
 y_train = np_utils.to_categorical(y_train)
 y_test  = np_utils.to_categorical(y_test)
 
-model = SqueezeNetBuilder(7, use_batch_norm = True)(x_train.shape[1:], 10)
+model = SqueezeNetBuilder(7, use_batch_norm = True, use_bypasses = True)(x_train.shape[1:], 10)
 
 eve = Eve()
 
