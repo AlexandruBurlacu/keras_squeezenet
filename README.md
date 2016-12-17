@@ -1,6 +1,8 @@
 # Keras Squeezenet
 Keras implementation of Squeeze Net architecture described in arXiv : 1602.07360v3 (https://arxiv.org/pdf/1602.07360.pdf)
 
+[UPDATE] It uses the so-called Eve optimizer (https://arxiv.org/pdf/1611.01505v2.pdf), implementation here: https://github.com/jayanthkoushik/sgd-feedback
+
 ## TODOs:
 * ~~add data augmentation~~ (Done)
 * add bypasses

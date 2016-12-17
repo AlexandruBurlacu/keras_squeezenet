@@ -1,5 +1,5 @@
-from keras.datasets import cifar10, mnist
-from keras.optimizers import SGD
+from keras.datasets import cifar10
+from eve import Eve
 from keras.utils import np_utils
 
 from keras.preprocessing.image import ImageDataGenerator
@@ -8,7 +8,6 @@ from models import SqueezeNetBuilder
 
 
 datasets = {
-#  "cifar100": cifar100,
   "cifar10": cifar10
 }
 
@@ -31,8 +30,10 @@ y_test  = np_utils.to_categorical(y_test)
 
 model = SqueezeNetBuilder(7, use_batch_norm = True)(x_train.shape[1:], 10)
 
+eve = Eve()
+
 model.compile(loss = "categorical_crossentropy",
-              optimizer = "adam", metrics = ["accuracy"])
+              optimizer = eve, metrics = ["accuracy"])
 
 model.fit_generator(augumented.flow(x_train, y_train),
                     samples_per_epoch = x_train.shape[0],
