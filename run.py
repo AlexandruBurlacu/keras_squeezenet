@@ -1,3 +1,4 @@
+#!squezee/bin/python
 from keras.datasets import cifar10
 from eve import Eve
 from keras.utils import np_utils
