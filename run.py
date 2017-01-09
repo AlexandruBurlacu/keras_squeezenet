@@ -10,16 +10,16 @@ from models import SqueezeNetBuilder
 import argparse
 
 config = {
-  "description" : "CLI to run the slighlty enhanced SqueezeNet model with Eve optimizer.\
-                   All parameters have default values.",
+  "description" : """CLI to run the slighlty enhanced SqueezeNet model with Eve optimizer.
+                   All parameters have default values.""",
   "epilog" : "It is not the finished version, there's still functionality to be implemented."
 }
 
 BN_HELP = "Parameter to switch on/off batch normalization."
 BY_HELP = "Parameter to switch on/off usage of bypasses."
 NS_HELP = "Parameter to switch on/off usage of Gaussian Noise."
-CONV_HELP = "It should be choosed in accordance to the dataset used. \
-             Currently it is recomended not to tune this parameter."
+CONV_HELP = """It should be choosed in accordance to the dataset used.
+             Currently it is recomended not to tune this parameter."""
 
 parser = argparse.ArgumentParser(**config)
 parser.add_argument("-bn", "--batch_norm", default = True, type = bool, help = BN_HELP)
