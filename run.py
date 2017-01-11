@@ -114,9 +114,9 @@ eve = Eve()
 model.compile(loss = "categorical_crossentropy",
               optimizer = eve, metrics = ["accuracy"])
 
-model.fit_generator(wrappedGenerator(),
+model.fit_generator(wrappedGenerator(64),
                     samples_per_epoch = x_train.shape[0],
-                    nb_epoch = 1, verbose = 1
+                    nb_epoch = args.nb_epochs, verbose = 1
                    )
 
 print model.metrics_names
