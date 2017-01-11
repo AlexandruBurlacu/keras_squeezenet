@@ -9,3 +9,5 @@ Keras implementation of Squeeze Net architecture described in arXiv : 1602.07360
 * experiment with Gaussian Noise
 * ~~experiment with Batch Normalization~~ (Parametrized inside SqueezeNetBuilder and FireModule classes)
 * ~~try more levels of Dense layers~~ (Added the possibility to inject a small subnet in the model)
+
+![Model's Graph (using bypasses)](/model.png)

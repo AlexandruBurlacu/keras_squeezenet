@@ -2,3 +2,5 @@ numpy
 scipy
 keras
 h5py
+pydot==1.1.0
+graphviz
