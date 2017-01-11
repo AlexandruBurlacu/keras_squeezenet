@@ -3,14 +3,6 @@ from keras.layers import (Activation, Dropout, AveragePooling2D, Input,
                          Flatten, MaxPooling2D, Convolution2D, merge,
                          BatchNormalization)
 
-#--------------------------------------------
-import theano as tn
-
-tn.config.floatX = "float32"
-tn.config.openmp = True
-tn.config.openmp_elemwise_minsize = 200000
-OMP_NUM_THREADS = 4
-#--------------------------------------------
 
 def bypass(layer1, layer2):
   return merge([layer1, layer2], mode = "concat", concat_axis = 1)
@@ -54,6 +46,7 @@ class Placeholder:
 class SqueezeNetBuilder:
   def __init__(self, fst_conv_size, use_bypasses = False,
                      use_noise = False, use_batch_norm = True,
+                     dropout_prob = 0.5,
                      DenseSubnet = Placeholder):
     """
       NOTE: for cifar dataset use avg_pool_size = (2, 2),
@@ -65,6 +58,7 @@ class SqueezeNetBuilder:
             To prevent it, tune the avg_pool_size.
     """
     self.fst_conv_size  = fst_conv_size
+    self.dropout_prob   = dropout_prob
     self.use_bypasses   = use_bypasses
     self.use_noise      = use_noise
     self.use_batch_norm = use_batch_norm
