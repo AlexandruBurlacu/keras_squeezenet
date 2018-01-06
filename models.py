@@ -1,5 +1,5 @@
 from keras.models import Model
-from keras.layers import (Activation, Dropout, AveragePooling2D, Input,
+from keras.layers import (Activation, Dropout, GlobalAveragePooling2D, Input,
                          Flatten, MaxPooling2D, Convolution2D, merge,
                          BatchNormalization)
 
@@ -95,13 +95,13 @@ class SqueezeNetBuilder:
     conv_2  = Convolution2D(num_of_cls, 1, 1)(dropout)
     #------------------------------------------#
     # The size should match the output of conv10
-    avg_pool_size = conv_2._keras_shape[2:]
+    # avg_pool_size = conv_2._keras_shape[2:]
     #------------------------------------------#
-    apool   = AveragePooling2D(avg_pool_size)(conv_2)
+    gapool  = GlobalAveragePooling2D(avg_pool_size)(conv_2)
 
-    flatten = Flatten()(apool)
+    # flatten = Flatten()(apool)
     outputs = Activation("softmax")(
-    	                            self.DenseSubnet()(flatten) or flatten
+    	                            self.DenseSubnet()(gapool) or gapool
     	                           )
 
     return Model(input = inputs, output = outputs)
