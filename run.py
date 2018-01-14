@@ -1,6 +1,8 @@
 #! squeeze/bin/python
+
+from __future__ import print_function
+
 import argparse
-import theano as tn
 
 config = {
   "description" : """CLI to run the slighlty enhanced SqueezeNet model with Eve optimizer.
@@ -27,15 +29,6 @@ parser.add_argument("-do", "--dropout", default = 0.5, type = int, choices = [0,
 parser.add_argument("--fst_conv", default = 7, type = int, choices = range(1, 13), help = CONV_HELP)
 args = parser.parse_args()
 
-
-# if args.device == 'cpu':
-#   tn.config.openmp = True
-#   tn.config.openmp_elemwise_minsize = 200000
-#   OMP_NUM_THREADS = 4
-# else:
-#   tn.config.floatX = "float32"
-#   tn.config.device = "gpu"
-
 #-----------------------------------------------------------------------------
 ##############################################################################
 #-----------------------------------------------------------------------------
@@ -49,7 +42,7 @@ from numpy import concatenate as concat
 from models import SqueezeNetBuilder
 from eve import Eve
 
-from keras.utils.visualize_util import plot
+from keras.utils import plot_model
 
 #-----------------------------------------------------------------------------
 ##############################################################################
@@ -65,63 +58,38 @@ datasets = {
 ##############################################################################
 #-----------------------------------------------------------------------------
 
-x_train = x_train.astype("float32") / 255.
-x_test  = x_test.astype("float32") / 255.
+y_train = np_utils.to_categorical(y_train)
+y_test  = np_utils.to_categorical(y_test)
 
 augumented = ImageDataGenerator(featurewise_center=True,
                                 featurewise_std_normalization=True,
                                 rotation_range=20,
                                 width_shift_range=0.2,
                                 height_shift_range=0.2,
-                                horizontal_flip=True
-                               )
+                                rescale=1/255.,
+                                horizontal_flip=True)
 augumented.fit(x_train)
-
-y_train = np_utils.to_categorical(y_train)
-y_test  = np_utils.to_categorical(y_test)
-
-def wrappedGenerator(batch_size = 32):
-  """
-    This augumented data generator makes possible
-    to tune the size of the batch that goes into the Neural Net.
-    Original's ImageDataGenerator batch size was fixed on 32 items per call.
-    It's pretty ugly, I know.
-  """
-  while True:
-    data = next(augumented.flow(x_train, y_train))
-    condition = batch_size
-
-    while condition > 32:
-      batch = next(augumented.flow(x_train, y_train))
-      data = concat([data[0], batch[0]]), concat([data[1], batch[1]])
-      condition -= 32
-
-    yield data
 
 #-----------------------------------------------------------------------------
 ##############################################################################
 #-----------------------------------------------------------------------------
 
 
-model = SqueezeNetBuilder(fst_conv_size = args.fst_conv,
-                          use_batch_norm = args.batch_norm,
-                          use_bypasses = args.bypasses,
-                          use_noise = args.noise,
-                          dropout_prob = args.dropout)(x_train.shape[1:], 10)
+model = SqueezeNetBuilder(fst_conv_size=args.fst_conv,
+                          use_batch_norm=args.batch_norm,
+                          use_bypasses=args.bypasses,
+                          use_noise=args.noise,
+                          dropout_prob=args.dropout)(x_train.shape[1:], 10)
 
 eve = Eve()
 
-model.compile(loss = "categorical_crossentropy",
-              optimizer = eve, metrics = ["accuracy"])
+model.compile(loss="categorical_crossentropy",
+              optimizer="adam", metrics=["accuracy"])
 
-model.fit_generator(wrappedGenerator(64),
-                    samples_per_epoch = x_train.shape[0],
-                    nb_epoch = args.nb_epochs, verbose = 1
-                   )
+model.fit_generator(augumented.flow(x_train, y_train, batch_size=64),
+                    steps_per_epoch=x_train.shape[0] / 64,
+                    epochs=args.nb_epochs)
 
-print model.metrics_names
-print model.evaluate(x_test, y_test, batch_size = 64)
+print(model.evaluate(x_test, y_test, batch_size=64))
 
-model.save("squeezenet.dump")
-
-plot(model, to_file = "model.png")
+model.save("squeezenet.h5")
