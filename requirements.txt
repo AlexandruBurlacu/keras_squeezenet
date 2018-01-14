@@ -1,6 +1,10 @@
-numpy
-scipy
-keras
-h5py
+graphviz==0.8.2
+h5py==2.7.1
+Keras==2.1.2
+numpy==1.14.0
 pydot==1.1.0
-graphviz
+pyparsing==2.2.0
+PyYAML==3.12
+scipy==1.0.0
+six==1.11.0
+Theano==1.0.1
